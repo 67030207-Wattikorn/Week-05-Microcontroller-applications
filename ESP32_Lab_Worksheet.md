@@ -184,12 +184,12 @@ ESP32-Architecture-Lab/          # โฟลเดอร์หลักของ
 4. **Architecture Focus**: การศึกษา ESP32 architecture แตกต่างจากการทำ arithmetic ใน Lab4 อย่างไร?
 
 ### ผลลัพธ์ที่คาดหวัง
-- [ ] สร้างโฟลเดอร์ ESP32-Architecture-Lab เรียบร้อย
-- [ ] คัดลอกหรือสร้าง docker-compose.yml ได้สำเร็จ
-- [ ] รัน Docker container ได้ปกติ (เหมือน Lab4)
-- [ ] เข้า container และใช้ ESP-IDF ได้ (คุ้นเคยจาก Lab4)
-- [ ] ติดตั้งเครื่องมือเพิ่มเติม (tree, htop) สำเร็จ
-- [ ] สร้าง directories สำหรับการทดลอง architecture เรียบร้อย
+- [✓] สร้างโฟลเดอร์ ESP32-Architecture-Lab เรียบร้อย
+- [✓] คัดลอกหรือสร้าง docker-compose.yml ได้สำเร็จ
+- [✓] รัน Docker container ได้ปกติ (เหมือน Lab4)
+- [✓] เข้า container และใช้ ESP-IDF ได้ (คุ้นเคยจาก Lab4)
+- [✓] ติดตั้งเครื่องมือเพิ่มเติม (tree, htop) สำเร็จ
+- [✓] สร้าง directories สำหรับการทดลอง architecture เรียบร้อย
 
 ### 🤖 ข้อดีของการใช้เครื่องมือที่คุ้นเคย
 
@@ -390,18 +390,18 @@ Memory analysis complete!
 
 | Memory Section | Variable/Function | Address (ที่แสดงออกมา) | Memory Type |
 |----------------|-------------------|----------------------|-------------|
-| Stack | stack_var | 0x_______ | SRAM |
-| Global SRAM | sram_buffer | 0x_______ | SRAM |
-| Flash | flash_string | 0x_______ | Flash |
-| Heap | heap_ptr | 0x_______ | SRAM |
+| Stack | stack_var | 0x3ffb4550 | SRAM |
+| Global SRAM | sram_buffer | 0x3ffb16ac | SRAM |
+| Flash | flash_string | 0x3f407d24 | Flash |
+| Heap | heap_ptr | 0x3ffb526c | SRAM |
 
 **Table 2.2: Memory Usage Summary**
 
 | Memory Type | Free Size (bytes) | Total Size (bytes) |
 |-------------|-------------------|--------------------|
-| Internal SRAM | _________ | 520,192 |
-| Flash Memory | _________ | varies |
-| DMA Memory | _________ | varies |
+| Internal SRAM | 380136 | 520,192 |
+| Flash Memory | 2,097,152 | varies |
+| DMA Memory | 303088 | varies |
 
 ### คำถามวิเคราะห์ (ง่าย)
 
@@ -596,20 +596,20 @@ void app_main() {
 
 | Test Type | Memory Type | Time (μs) | Ratio vs Sequential |
 |-----------|-------------|-----------|-------------------|
-| Sequential | Internal SRAM | _______ | 1.00x |
-| Random | Internal SRAM | _______ | ____x |
-| Sequential | External Memory | _______ | ____x |
-| Random | External Memory | _______ | ____x |
+| Sequential | Internal SRAM | 7219 | 1.00x |
+| Random | Internal SRAM | 7811 | 1.08x |
+| Sequential | External Memory | 7140 | 1.09x |
+| Random | External Memory | 7764 | 0.99x |
 
 **Table 3.2: Stride Access Performance**
 
 | Stride Size | Time (μs) | Ratio vs Stride 1 |
 |-------------|-----------|------------------|
-| 1 | _______ | 1.00x |
-| 2 | _______ | ____x |
-| 4 | _______ | ____x |
-| 8 | _______ | ____x |
-| 16 | _______ | ____x |
+| 1 | 7290 | 1.00x |
+| 2 | 3418 | 0.47x |
+| 4 | 1828 | 0.25x |
+| 8 | 876 | 0.12x |
+| 16 | 408 | 0.06x |
 
 ### คำถามวิเคราะห์
 
