@@ -179,17 +179,31 @@ ESP32-Architecture-Lab/          # โฟลเดอร์หลักของ
 ### คำถามทบทวน
 
 1. **Docker Commands**: คำสั่ง `docker-compose up -d` และ `docker-compose exec esp32-dev bash` ทำอะไร?
-2. **ESP-IDF Tools**: เครื่องมือไหนจาก Lab4 ที่จะใช้ในการ build โปรแกรม ESP32?
+- **Ans**
+    -  `docker-compose up -d`
+    -   **Ans**:สร้างและรัน container ตาม config ใน docker-compose.yml แบบ เบื้องหลัง (detached)
+    -   `docker-compose exec esp32-dev bash`
+    -   **Ans**:เข้าสู่ bash(แถบคำสั่ง) ภายใน container ชื่อ esp32-dev เพื่อใช้งานหรือพัฒนา ESP3
+3. **ESP-IDF Tools**: เครื่องมือไหนจาก Lab4 ที่จะใช้ในการ build โปรแกรม ESP32?
+- **Ans**
+    - `idf.py build` -> ใช้สำหรับ compile source code และ link ไฟล์ต่าง ๆ ให้กลายเป็น binary (.bin) ที่สามารถโหลดลง ESP32 ได้
+    - `idf.py monitor` -> ใช้ ดู log และข้อมูลจาก Serial ของบอร์ด (ใช้สำหรับ debug หรือดูผลลัพธ์)
+
 3. **New Tools**: เครื่องมือใหม่ที่ติดตั้ง (tree, htop) ใช้ทำอะไร?
+- **Ans**
+  - แสดง โครงสร้างไฟล์และโฟลเดอร์ ในรูปแบบต้นไม้
 4. **Architecture Focus**: การศึกษา ESP32 architecture แตกต่างจากการทำ arithmetic ใน Lab4 อย่างไร?
+- **Ans**
+   - การศึกษา ESP32 architecture เน้นความเข้าใจ โครงสร้างภายในของชิป เช่น หน่วยประมวลผล, หน่วยความจำ, และอุปกรณ์ต่อพ่วง
+   - ส่วน Lab4 (Arithmetic) เน้นการฝึกเขียนโปรแกรมพื้นฐาน (เช่น บวก ลบ คูณ หาร) เพื่อเข้าใจ ภาษา C และตรรกะโปรแกรม
 
 ### ผลลัพธ์ที่คาดหวัง
-- [✓] สร้างโฟลเดอร์ ESP32-Architecture-Lab เรียบร้อย
-- [✓] คัดลอกหรือสร้าง docker-compose.yml ได้สำเร็จ
-- [✓] รัน Docker container ได้ปกติ (เหมือน Lab4)
-- [✓] เข้า container และใช้ ESP-IDF ได้ (คุ้นเคยจาก Lab4)
-- [✓] ติดตั้งเครื่องมือเพิ่มเติม (tree, htop) สำเร็จ
-- [✓] สร้าง directories สำหรับการทดลอง architecture เรียบร้อย
+- [ ] สร้างโฟลเดอร์ ESP32-Architecture-Lab เรียบร้อย
+- [ ] คัดลอกหรือสร้าง docker-compose.yml ได้สำเร็จ
+- [ ] รัน Docker container ได้ปกติ (เหมือน Lab4)
+- [ ] เข้า container และใช้ ESP-IDF ได้ (คุ้นเคยจาก Lab4)
+- [ ] ติดตั้งเครื่องมือเพิ่มเติม (tree, htop) สำเร็จ
+- [ ] สร้าง directories สำหรับการทดลอง architecture เรียบร้อย
 
 ### 🤖 ข้อดีของการใช้เครื่องมือที่คุ้นเคย
 
@@ -335,11 +349,11 @@ xtensa-esp32-elf-objdump -t build/memory_test.elf | grep -E "(sram_buffer|flash_
 
 ```bash
 # รันโปรแกรมใน QEMU emulator (ไม่ต้องใช้ hardware จริง)
-idf.py qemu 
+idf.py qemu monitor
 
 
 # หรือถ้าต้องการ build ใหม่ก่อนรัน
-# idf.py build qemu 
+# idf.py build qemu monitor
 
 # กด Ctrl+] เพื่อออกจาก monitor
 # ดูผลลัพธ์ที่แสดง memory addresses
@@ -392,23 +406,38 @@ Memory analysis complete!
 |----------------|-------------------|----------------------|-------------|
 | Stack | stack_var | 0x3ffb4550 | SRAM |
 | Global SRAM | sram_buffer | 0x3ffb16ac | SRAM |
-| Flash | flash_string | 0x3f407d24 | Flash |
-| Heap | heap_ptr | 0x3ffb526c | SRAM |
+| Flash | flash_string | 0x3f407b48 | Flash |
+| Heap | heap_ptr | 0x3ffb5264 | SRAM |
 
 **Table 2.2: Memory Usage Summary**
 
 | Memory Type | Free Size (bytes) | Total Size (bytes) |
 |-------------|-------------------|--------------------|
-| Internal SRAM | 380136 | 520,192 |
+| Internal SRAM | 380096 | 520,192 |
 | Flash Memory | 2,097,152 | varies |
-| DMA Memory | 303088 | varies |
+| DMA Memory | 303096 | varies |
 
 ### คำถามวิเคราะห์ (ง่าย)
 
 1. **Memory Types**: SRAM และ Flash Memory ใช้เก็บข้อมูลประเภทไหน?
+- **Ans**
+  - SRAM: เก็บตัวแปรชั่วคราว เช่น local, global, heap
+  - Flash: เก็บโปรแกรม, ข้อมูลคงที่ (const), ไฟล์
 2. **Address Ranges**: ตัวแปรแต่ละประเภทอยู่ใน address range ไหน?
-3. **Memory Usage**: ESP32 มี memory ทั้งหมดเท่าไร และใช้ไปเท่าไร?
+- **Ans**
+  | ประเภทข้อมูล                | ตัวอย่าง Address Range               | อธิบาย                                                |
+  | --------------------------- | ------------------------------------ | ----------------------------------------------------- |
+  | **Flash (ROM)**             | `0x3f40_0000` – `0x3f7f_ffff`        | โค้ดโปรแกรม + string คงที่ (`const char*`)            |
+  | **Data (SRAM, .data/.bss)** | `0x3ffb_0000` – `0x3ffd_ffff`        | ตัวแปร global/static ที่เปลี่ยนค่าได้                 |
+  | **Heap (malloc/new)**       | `0x3ffb_xxxx` – `0x3ffd_xxxx`        | ขึ้นอยู่กับขนาด heap ที่เหลือ                         |
+  | **Stack**                   | `0x3ffb_4xxx`, `0x3ffb_5xxx` เป็นต้น | ตัวแปรในฟังก์ชัน (local)                              |
+  | **PSRAM (ถ้ามี)**           | `0x3f80_0000` ขึ้นไป                 | หน่วยความจำเพิ่มพิเศษ (เช่น 4MB) สำหรับเก็บข้อมูลใหญ่ |
 
+4. **Memory Usage**: ESP32 มี memory ทั้งหมดเท่าไร และใช้ไปเท่าไร?
+- **Ans**
+  - SRAM ทั้งหมด: ~380,096 bytes (≈ 371 KB)
+  - Heap ว่าง: 303,096 bytes
+  - Flash: ไม่ระบุขนาด, โดยทั่วไป = 2–4 MB
 ---
 
 ## 🔬 การทดลองที่ 3: การศึกษา Cache Performance
@@ -596,27 +625,35 @@ void app_main() {
 
 | Test Type | Memory Type | Time (μs) | Ratio vs Sequential |
 |-----------|-------------|-----------|-------------------|
-| Sequential | Internal SRAM | 7219 | 1.00x |
-| Random | Internal SRAM | 7811 | 1.08x |
-| Sequential | External Memory | 7140 | 1.09x |
-| Random | External Memory | 7764 | 0.99x |
+| Sequential | Internal SRAM | 11646 | 1.00x |
+| Random | Internal SRAM | 11201 | 0.96x |
+| Sequential | External Memory | 29436 | 2.53x |
+| Random | External Memory | 32574 μs | 1.11x   |
 
 **Table 3.2: Stride Access Performance**
 
-| Stride Size | Time (μs) | Ratio vs Stride 1 |
+| Stride Size | Time (μs) | Ratio vs Stride 1 |    
 |-------------|-----------|------------------|
-| 1 | 7290 | 1.00x |
-| 2 | 3418 | 0.47x |
-| 4 | 1828 | 0.25x |
-| 8 | 876 | 0.12x |
-| 16 | 408 | 0.06x |
+| 1 | 10854 | 1.00x |
+| 2 | 5521 | 0.51x |
+| 4 | 2656 | 0.24x |
+| 8 | 1370 | 0.13x |
+| 16 | 658 | 0.06x |
 
 ### คำถามวิเคราะห์
 
 1. **Cache Efficiency**: ทำไม sequential access เร็วกว่า random access?
-2. **Memory Hierarchy**: ความแตกต่างระหว่าง internal SRAM และ external memory คืออะไร?
-3. **Stride Patterns**: stride size ส่งผลต่อ performance อย่างไร?
-
+- **Ans**
+  - Sequential access เข้าถึงข้อมูลที่อยู่ติดกันในหน่วยความจำ ทำให้ CPU cache สามารถ โหลดล่วงหน้า (prefetch) ได้หลายค่าภายในหนึ่งครั้ง ซึ่งช่วยลดเวลาในการเข้าถึงข้อมูล
+3. **Memory Hierarchy**: ความแตกต่างระหว่าง internal SRAM และ external memory คืออะไร?
+- **Ans**
+  - Internal SRAM: เป็นหน่วยความจำภายในชิป ESP32 → ความเร็วสูง, เข้าถึงได้เร็วมาก
+  - External Memory (PSRAM): เป็นหน่วยความจำภายนอกที่เชื่อมต่อผ่าน SPI bus → มี latency สูงกว่า เพราะต้องส่งสัญญาณผ่านบัสภายนอก
+4. **Stride Patterns**: stride size ส่งผลต่อ performance อย่างไร?
+- **Ans**
+  - Stride size คือจำนวนช่องที่กระโดดข้ามในแต่ละการเข้าถึง array
+  - Stride size ที่เล็ก (เช่น 1) ทำให้เข้าถึงข้อมูลต่อเนื่องกัน → ใช้ cache ได้มีประสิทธิภาพ → ทำงานเร็วแต่เมื่อ stride ใหญ่ขึ้น (เช่น 8 หรือ 16) → ข้ามข้อมูลเยอะ → cache ใช้งานได้น้อยลง → ต้องโหลดจากหน่วยความจำบ่อย → ประสิทธิภาพลดลง
+    
 ---
 
 ## 🔬 การทดลองที่ 4: การศึกษา Dual-Core Architecture
@@ -842,26 +879,32 @@ void app_main() {
 
 | Metric | Core 0 (PRO_CPU) | Core 1 (APP_CPU) |
 |--------|-------------------|-------------------|
-| Total Iterations | _______ | _______ |
-| Average Time per Iteration (μs) | _______ | _______ |
-| Total Execution Time (ms) | _______ | _______ |
-| Task Completion Rate | _______ | _______ |
+| Total Iterations | 100 | 150 |
+| Average Time per Iteration (μs) | 63 | 9694 |
+| Total Execution Time (ms) | 4998 | 5940 |
+| Task Completion Rate | 100% | 100% |
 
 **Table 4.2: Inter-Core Communication**
 
 | Metric | Value |
 |--------|-------|
-| Messages Sent | _______ |
-| Messages Received | _______ |
-| Average Latency (μs) | _______ |
-| Queue Overflow Count | _______ |
+| Messages Sent | 10 |
+| Messages Received | 10 |
+| Average Latency (μs) | 15,113 |
+| Queue Overflow Count | 0 |
 
 ### คำถามวิเคราะห์
 
 1. **Core Specialization**: จากผลการทดลอง core ไหนเหมาะกับงานประเภทใด?
+- **Ans**
+  -  Core 0 ใช้เวลาต่อ iteration น้อยมาก (เฉลี่ย 63 μs) เหมาะกับ งานที่ต้องการความเร็วและตอบสนองไว เช่น งานควบคุมอุปกรณ์, การจัดการ protocol
+  -  Core 1 ใช้เวลาต่อ iteration นานกว่ามาก (เฉลี่ย 9694 μs) เพราะมีการคำนวณเชิง floating-point เหมาะกับ งานคำนวณหนัก / background processing เช่น การประมวลผลข้อมูล
 2. **Communication Overhead**: inter-core communication มี overhead เท่าไร?
+- **Ans**
+  - การส่งข้อความระหว่าง Core มี latency เฉลี่ยประมาณ 12 ms ต่อข้อความ → ถือว่า มี overhead พอสมควร โดยเฉพาะถ้า Core 1 ยุ่งกับงานคำนวณ
 3. **Load Balancing**: การกระจายงานระหว่าง cores มีประสิทธิภาพหรือไม่?
-
+- **Ans**
+  - งานถูกกระจายได้ดี ทั้งสอง Core ทำงานเสร็จใกล้เคียงกัน แม้ภาระต่างกัน → แสดงว่า FreeRTOS จัดการ load ได้มีประสิทธิภาพในระดับหนึ่ง
 ---
 
 ## 📊 การวิเคราะห์และสรุปผล
@@ -874,33 +917,37 @@ void app_main() {
 ### แบบฟอร์มส่งงาน
 
 **ข้อมูลนักศึกษา:**
-- ชื่อ: _________________________________
-- รหัสนักศึกษา: _______________________
-- วันที่ทำการทดลอง: ___________________
+- ชื่อ: วัทธิกร อินทองคำ
+- รหัสนักศึกษา: 67030207
+- วันที่ทำการทดลอง: 30/7/2568
 
 **Checklist การทดลอง:**
-- [ ] Environment setup สำเร็จ (ต่อเนื่องจากสัปดาห์ที่ 4)
-- [ ] Memory architecture analysis เสร็จสมบูรณ์
-- [ ] Cache performance testing เสร็จสมบูรณ์
-- [ ] Dual-core analysis เสร็จสมบูรณ์
-- [ ] รายงานผลการทดลองครบถ้วน
+- [x] Environment setup สำเร็จ (ต่อเนื่องจากสัปดาห์ที่ 4)
+- [x] Memory architecture analysis เสร็จสมบูรณ์
+- [x] Cache performance testing เสร็จสมบูรณ์
+- [x] Dual-core analysis เสร็จสมบูรณ์
+- [x] รายงานผลการทดลองครบถ้วน
 
 **คะแนนประเมิน:**
-- การเตรียม Environment และ Continuity (15 คะแนน): _______
-- Memory Analysis (30 คะแนน): _______
-- Cache Performance (25 คะแนน): _______
-- Dual-Core Analysis (25 คะแนน): _______
-- รายงานและการเปรียบเทียบ (5 คะแนน): _______
-- **รวม (100 คะแนน): _______**
+- การเตรียม Environment และ Continuity (15 คะแนน): 15
+- Memory Analysis (30 คะแนน): 30
+- Cache Performance (25 คะแนน): 25
+- Dual-Core Analysis (25 คะแนน): 25
+- รายงานและการเปรียบเทียบ (5 คะแนน): 5
+- **รวม (100 คะแนน): 100**
 
 **คำถามเพิ่มเติม:**
 1. เปรียบเทียบประสบการณ์การใช้ Docker ในสัปดาห์นี้กับสัปดาห์ที่ 4:
-   _________________________________________________
+    - การใช้ Docker สัปดาห์นี้มีความต่อเนื่องจากครั้งก่อน ทำให้ setup ง่ายขึ้น ไม่ต้องติดตั้งเครื่องมือซ้ำ ช่วยให้โฟกัสที่โค้ดและการทดลองได้มากขึ้น
 
 2. สิ่งที่เรียนรู้เพิ่มเติมเกี่ยวกับ ESP32 architecture:
-   _________________________________________________
+    - ได้เข้าใจการทำงานของ cache memory, internal SRAM vs external PSRAM และการทำงานของ dual-core (PRO_CPU vs APP_CPU) อย่างลึกซึ้ง รวมถึงการใช้ FreeRTOS ในการกระจายงาน
+
 
 3. ความท้าทายที่พบในการทำ architecture analysis:
+     - code error
+     - `idf.py qemu monitor` ไม่ขึ้น ต้องใช้ `idf.py qemu`
+     - อ่านข้อมูลไม่เข้าใจบางส่วน
    _________________________________________________
 
 ---
